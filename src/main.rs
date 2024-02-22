@@ -179,9 +179,8 @@ async fn get_weather(
         .header("X-Api-Key", "AkW2CJ7sXNWjKVtACMI8GGYIYBE4XU8haDniaYUt")
         .send()
         .await?;
-    // println!("{:?} {:?}", response.status(), response.text().await?);
     let data: WeatherResponse = response.json().await?;
-    // println!("{:?}", data);
+
     ctx.say(format!("Weather at {} :Current Wind {} , at {}, temperature is  {}, with an humidity of {} feels like {}  today minimal temp is {} and max is {}",x, data.wind_speed, data.wind_degrees, data.temp, data.humidity, data.feels_like, data.min_temp ,data.max_temp)).await?;
     Ok(())
 }
