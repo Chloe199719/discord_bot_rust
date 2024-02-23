@@ -202,9 +202,6 @@ struct WeatherResponse {
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().expect("Failed to load .env file");
-
-    // let framework = StandardFramework::new().group(&GENERAL_GROUP);
-    // framework.configure(Configuration::new().prefix("!")); // set the bot's prefix to "~"
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands: vec![
