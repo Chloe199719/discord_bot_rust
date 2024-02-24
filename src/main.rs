@@ -176,7 +176,7 @@ async fn get_weather(
     let request = reqwest::Client::new();
     let response = request
         .get(format!("https://api.api-ninjas.com/v1/weather?city={}", x))
-        .header("X-Api-Key", "AkW2CJ7sXNWjKVtACMI8GGYIYBE4XU8haDniaYUt")
+        // .header("X-Api-Key", "AkW2CJ7sXNWjKVtACMI8GGYIYBE4XU8haDniaYUt")
         .send()
         .await?;
     let data: WeatherResponse = response.json().await?;
