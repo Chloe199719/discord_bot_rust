@@ -243,13 +243,6 @@ async fn main() {
 }
 
 // #[command]
-// async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
-//     msg.reply(ctx, "Pong!").await?;
-
-//     Ok(())
-// }
-
-// #[command]
 // async fn am_i_admin(ctx: &Context, msg: &Message, _args: Args) -> CommandResult {
 //     let is_admin = if let (Some(member), Some(guild)) = (&msg.member, msg.guild(&ctx.cache)) {
 //         member.roles.iter().any(|role| {
