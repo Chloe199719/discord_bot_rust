@@ -1,6 +1,8 @@
+use chrono::format;
 use poise::serenity_prelude as serenity;
 
 use ::serenity::{all::ChannelType, builder::CreateChannel};
+use reqwest::Request;
 use serde::Deserialize;
 use serenity::prelude::*;
 
@@ -185,6 +187,30 @@ async fn get_weather(
     Ok(())
 }
 
+#[poise::command(slash_command, prefix_command)]
+async fn battery(ctx: Context<'_>) -> Result<(), Error> {
+    let client = reqwest::Client::new();
+    let car_response = client
+        .get("https://api.tessie.com/LRW3E7FS6RC040530/battery")
+        .header(
+            "Authorization",
+            format!("Bearer {}", env::var("TESSIE_KEY").unwrap()),
+        )
+        .send()
+        .await?;
+    let car_data: CarBattery = car_response.json().await?;
+
+    let carResponse = ctx
+        .say(format!("Tessie Battery is {}", car_data.battery_level))
+        .await?;
+    Ok(())
+}
+#[derive(Deserialize, Debug, Clone)]
+struct CarBattery {
+    battery_level: u32,
+    timestamp: i64,
+}
+
 #[derive(Deserialize, Debug, Clone)]
 struct WeatherResponse {
     wind_speed: f64,
@@ -212,6 +238,7 @@ async fn main() {
                 cr_ca(),
                 cr_di(),
                 cr_parent(),
+                battery(),
             ],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".to_string()),
