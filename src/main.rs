@@ -189,7 +189,49 @@ async fn get_weather(
     ctx.say(format!("Weather at {} :Current Wind {} , at {}, temperature is  {}, with an humidity of {} feels like {}  today minimal temp is {} and max is {}",x, data.wind_speed, data.wind_degrees, data.temp, data.humidity, data.feels_like, data.min_temp ,data.max_temp)).await?;
     Ok(())
 }
+#[poise::command(slash_command, prefix_command)]
+async fn lock(
+    ctx: Context<'_>,
+    #[description = "Unlock or Lock"] lock: String,
+) -> Result<(), Error> {
+    if ctx.author().id == 139886040524652544 {
+        if lock == "unlock" {
+            let client = reqwest::Client::new();
+            let car_response = client
+                .post("https://api.tessie.com/LRW3E7FS6RC040530/command/unlock?retry_duration=40&wait_for_completion=true")
+                .header(
+                    "Authorization",
+                    format!("Bearer {}", env::var("TESSIE_KEY").unwrap()),
+                )
+                .send()
+                .await?;
+            if car_response.status() != 200 {
+                ctx.say("Failed to lock the car").await?;
+                return Ok(());
+            }
+            ctx.say("Jessie is now unlocked").await?;
+        } else {
+            let client = reqwest::Client::new();
+            let car_response = client
+            .post("https://api.tessie.com/LRW3E7FS6RC040530/command/lock?retry_duration=40&wait_for_completion=true")
+            .header(
+                "Authorization",
+                format!("Bearer {}", env::var("TESSIE_KEY").unwrap()),
+            )
+            .send()
+            .await?;
+            if car_response.status() != 200 {
+                ctx.say("Failed to lock the car").await?;
+                return Ok(());
+            }
+            ctx.say("Jessie is now locked").await?;
+        }
+    } else {
+        ctx.say("You are not authorized to lock the car").await?;
+    }
 
+    Ok(())
+}
 #[poise::command(slash_command, prefix_command)]
 async fn battery(ctx: Context<'_>) -> Result<(), Error> {
     let client = reqwest::Client::new();
@@ -337,6 +379,49 @@ async fn car_state(ctx: Context<'_>) -> Result<(), Error> {
         car_data.charge_state.usable_battery_level,
     ))
     .await?;
+    ctx.say(format!(
+        "Climate State:
+        Allow Cabin Overheat Protection: {}
+        Auto Seat Climate Left : {}
+        Auto Seat Climate Right: {}
+        Auto Steering Wheel Heater: {}
+        Battery Heater: {}
+        Cabin Overheat Protection: {}
+        Cabin Overheat Protection Active: {}
+        Climate Keeper Mode: {}
+        Defrost Mode: {}
+        Driver Temperature Setting: {}
+        Fan Status: {}
+        Inside Temp: {}
+        Is Auto Conditioned Air On: {}
+        Is Climate On: {}
+        Is Front Defroster On: {}
+        Is Preconditioning: {}
+        Is Rear Defroster On: {}
+        Is Side Mirror Heater On: {}
+        ",
+        car_data.climate_state.is_climate_on,
+        car_data.climate_state.auto_seat_climate_left,
+        car_data.climate_state.auto_seat_climate_right,
+        car_data.climate_state.auto_steering_wheel_heat,
+        car_data.climate_state.battery_heater,
+        car_data.climate_state.cabin_overheat_protection,
+        car_data
+            .climate_state
+            .cabin_overheat_protection_actively_cooling,
+        car_data.climate_state.climate_keeper_mode,
+        car_data.climate_state.defrost_mode,
+        car_data.climate_state.driver_temp_setting,
+        car_data.climate_state.fan_status,
+        car_data.climate_state.inside_temp,
+        car_data.climate_state.is_auto_conditioning_on,
+        car_data.climate_state.is_climate_on,
+        car_data.climate_state.is_front_defroster_on,
+        car_data.climate_state.is_preconditioning,
+        car_data.climate_state.is_rear_defroster_on,
+        car_data.climate_state.side_mirror_heaters,
+    ))
+    .await?;
     Ok(())
 }
 
@@ -375,6 +460,7 @@ async fn main() {
                 cr_parent(),
                 battery(),
                 car_state(),
+                lock(),
             ],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".to_string()),
