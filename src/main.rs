@@ -1,8 +1,9 @@
-use chrono::{format, DateTime};
+#![allow(unused)]
+use chrono::DateTime;
 use poise::serenity_prelude as serenity;
 
 use ::serenity::{all::ChannelType, builder::CreateChannel};
-use reqwest::Request;
+
 use serde::Deserialize;
 use serenity::prelude::*;
 
@@ -12,42 +13,9 @@ struct Data {} // User data, which is stored and accessible in all command invoc
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
 
-use serenity::model::gateway::GatewayIntents;
-
 use crate::car_types::Car;
 mod car_types;
-// #[group]
-// #[commands(ping, am_i_admin, am_i_cool, random_quote, test)]
-// struct General;
 
-// struct Handler;
-
-// #[async_trait]
-// impl EventHandler for Handler {
-//     async fn message(&self, ctx: Context, msg: Message) {
-//         println!("{}: {}", msg.author.name, msg.content);
-//         if msg.content == "ping" {
-//             let response = MessageBuilder::new()
-//                 .push("Pong!")
-//                 .mention(&msg.author)
-//                 .build();
-//             if let Err(why) = msg.channel_id.say(&ctx.http, &response).await {
-//                 println!("Error sending message: {:?}", why);
-//             }
-//         }
-//     }
-// }
-// struct ShardManagerContainer;
-
-// impl TypeMapKey for ShardManagerContainer {
-//     type Value = Arc<ShardManager>;
-// }
-
-// struct CommandCounter;
-
-// impl TypeMapKey for CommandCounter {
-//     type Value = HashMap<String, u64>;
-// }
 #[poise::command(slash_command, prefix_command)]
 async fn cr_ca(
     ctx: Context<'_>,
@@ -102,11 +70,7 @@ async fn cr_parent(
                 .unwrap();
         }
     }
-    // x.create_channel(
-    //     &ctx,
-    //     CreateChannel::new(channel_name).kind(ChannelType::Text),
-    // )
-    // .await?;
+
     poise::say_reply(
         ctx,
         format!("Channel with {} name been created", channel_name),
@@ -490,69 +454,3 @@ async fn main() {
         println!("An error occurred while running the client: {:?}", why);
     }
 }
-
-// #[command]
-// async fn am_i_admin(ctx: &Context, msg: &Message, _args: Args) -> CommandResult {
-//     let is_admin = if let (Some(member), Some(guild)) = (&msg.member, msg.guild(&ctx.cache)) {
-//         member.roles.iter().any(|role| {
-//             guild
-//                 .roles
-//                 .get(role)
-//                 .is_some_and(|r| r.has_permission(Permissions::ADMINISTRATOR))
-//         })
-//     } else {
-//         false
-//     };
-
-//     if is_admin {
-//         msg.channel_id.say(&ctx.http, "Yes, you are.").await?;
-//     } else {
-//         msg.channel_id.say(&ctx.http, "No, you are not.").await?;
-//     }
-
-//     Ok(())
-// }
-// #[command]
-// async fn am_i_cool(ctx: &Context, msg: &Message, _args: Args) -> CommandResult {
-//     if msg.author.id.to_string().as_str() == "122111855219965954" {
-//         msg.reply(&ctx.http, "No you are not").await?;
-//     } else {
-//         msg.reply(&ctx.http, "Yes you are").await?;
-//     }
-
-//     Ok(())
-// }
-
-// #[command]
-// async fn random_quote(ctx: &Context, msg: &Message) -> CommandResult {
-//     let req: reqwest::Client = reqwest::Client::new();
-//     let res = req
-//         .get("https://api.api-ninjas.com/v1/quotes?category=happiness")
-//         .header("X-Api-Key", "AkW2CJ7sXNWjKVtACMI8GGYIYBE4XU8haDniaYUt")
-//         .send()
-//         .await?;
-
-//     println!("{:?}", res.status());
-//     let data: Vec<QuoteResponse> = res.json().await?;
-//     msg.channel_id
-//         .say(
-//             &ctx.http,
-//             format!("{} by: Author: {}", data[0].quote, data[0].author),
-//         )
-//         .await?;
-
-//     Ok(())
-// }
-
-// #[derive(Deserialize, Debug, Clone)]
-// struct QuoteResponse {
-//     quote: String,
-//     author: String,
-//     _category: String,
-// }
-// #[command]
-// async fn test(_ctx: &Context, msg: &Message) -> CommandResult {
-//     let content = &msg.content;
-//     println!("{}", content);
-//     Ok(())
-// }
