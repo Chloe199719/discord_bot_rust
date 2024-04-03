@@ -162,7 +162,7 @@ async fn lock(
         if lock == "unlock" {
             let client = reqwest::Client::new();
             let car_response = client
-                .post("https://api.tessie.com/LRW3E7FS6RC040530/command/unlock?retry_duration=40&wait_for_completion=true")
+                .get("https://api.tessie.com/LRW3E7FS6RC040530/command/unlock?retry_duration=40&wait_for_completion=true")
                 .header(
                     "Authorization",
                     format!("Bearer {}", env::var("TESSIE_KEY").unwrap()),
@@ -170,6 +170,7 @@ async fn lock(
                 .send()
                 .await?;
             if car_response.status() != 200 {
+                println!("{:?}", car_response.text().await?);
                 ctx.say("Failed to lock the car").await?;
                 return Ok(());
             }
@@ -177,7 +178,7 @@ async fn lock(
         } else {
             let client = reqwest::Client::new();
             let car_response = client
-            .post("https://api.tessie.com/LRW3E7FS6RC040530/command/lock?retry_duration=40&wait_for_completion=true")
+            .get("https://api.tessie.com/LRW3E7FS6RC040530/command/lock?retry_duration=40&wait_for_completion=true")
             .header(
                 "Authorization",
                 format!("Bearer {}", env::var("TESSIE_KEY").unwrap()),
@@ -185,6 +186,8 @@ async fn lock(
             .send()
             .await?;
             if car_response.status() != 200 {
+                println!("{:?}", car_response.text().await?);
+
                 ctx.say("Failed to lock the car").await?;
                 return Ok(());
             }
