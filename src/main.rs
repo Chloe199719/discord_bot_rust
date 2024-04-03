@@ -170,7 +170,6 @@ async fn lock(
                 .send()
                 .await?;
             if car_response.status() != 200 {
-                println!("{:?}", car_response.text().await?);
                 ctx.say("Failed to lock the car").await?;
                 return Ok(());
             }
@@ -186,8 +185,6 @@ async fn lock(
             .send()
             .await?;
             if car_response.status() != 200 {
-                println!("{:?}", car_response.text().await?);
-
                 ctx.say("Failed to lock the car").await?;
                 return Ok(());
             }
