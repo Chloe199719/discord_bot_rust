@@ -27,11 +27,6 @@ async fn cr_ca(
             i.0.delete(&ctx).await.unwrap();
         }
     }
-    // x.create_channel(
-    //     &ctx,
-    //     CreateChannel::new(channel_name).kind(ChannelType::Text),
-    // )
-    // .await?;
     poise::say_reply(
         ctx,
         format!("Channel with {} name been deleted", channel_name),
